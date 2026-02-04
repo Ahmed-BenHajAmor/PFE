@@ -11,4 +11,126 @@ generator client {
 
 datasource db {
   provider = "postgresql"
+  url      = env("DATABASE_URL")
 }
+
+enum Role {
+  USER
+  ADMIN
+}
+model User {
+  id            String           @id @default(uuid())
+  email         String           @unique
+  password      String
+  name          String
+  role          Role
+  createdAt     DateTime         @default(now())
+
+  subscriptions Subscription[]
+  inputedSessions InputedSession[]
+}
+
+model Subscription {
+  id        String    @id @default(uuid())
+  plan      String
+  status    String
+  startDate DateTime
+  endDate   DateTime
+
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+
+  payments  Payment?
+}
+
+model Payment {
+  id              String   @id @default(uuid())
+  amount          Float
+  currency        String
+  paymentProvider String
+  status          String
+  createdAt       DateTime @default(now())
+
+  subscriptionId  String @unique
+  subscription    Subscription @relation(fields: [subscriptionId], references: [id])
+}
+
+model Sound {
+  id                String   @id @default(uuid())
+  title             String
+  description       String
+  totalDuration     Int
+  status            String
+  url               String
+  nombreOfDownloads Int
+
+  sessionSounds     SessionSound[]
+  actualSessionSounds ActualSessionSound[]
+}
+
+model InputedSession {
+  id               String   @id @default(uuid())
+  startTime        DateTime
+  endTime          DateTime
+  date             DateTime
+  prompt           String
+  chosenDuration   Int
+  tempature        Float
+  temperatureUnit  String
+
+  userId           String
+  user             User     @relation(fields: [userId], references: [id])
+
+  sessionSounds    SessionSound[]
+  actualSession    ActualSession?
+
+  sessionFeedback SessionFeedback?
+}
+
+model SessionSound {
+  id             String   @id @default(uuid())
+  volume         Float
+  duration       Int
+  startingTime   Int
+  endingTime     Int
+
+  sessionId      String
+  session        InputedSession @relation(fields: [sessionId], references: [id])
+
+  soundId        String
+  sound          Sound @relation(fields: [soundId], references: [id])
+}
+
+model ActualSession {
+  id               String   @id @default(uuid())
+  startTime        DateTime
+  actualEndTime    DateTime
+  actualDuration   Int
+
+  inputedSessionId String   @unique
+  inputedSession   InputedSession @relation(fields: [inputedSessionId], references: [id])
+
+  playedSounds     ActualSessionSound[]
+}
+
+model ActualSessionSound {
+  id              String   @id @default(uuid())
+  playedDuration  Int
+  played          Boolean
+
+  soundId String
+  sound Sound @relation(fields: [soundId], references: [id])
+
+  actualSessionId String
+  actualSession   ActualSession @relation(fields: [actualSessionId], references: [id])
+}
+
+model SessionFeedback {
+  id          String   @id @default(uuid())
+  feeling     String
+  description String
+
+  sessionId String @unique
+  session InputedSession @relation(fields: [sessionId], references: [id])
+}
+

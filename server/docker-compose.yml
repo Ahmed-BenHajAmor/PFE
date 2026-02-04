@@ -1,0 +1,29 @@
+version: "3.9"
+
+services:
+  api-gateway:
+    build:
+      context: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "3000:3000"
+    depends_on:
+      - management-service
+      - ai-service
+    environment:
+      MANAGEMENT_SERVICE_URL: http://management-service:3000
+      AI_SERVICE_URL: http://ai-service:8000
+
+  management-service:
+    build:
+      context: ./management-service
+    container_name: management-service
+    expose:
+      - "3000"
+
+  ai-service:
+    build:
+      context: ./ai-service
+    container_name: ai-service
+    expose:
+      - "8000"
