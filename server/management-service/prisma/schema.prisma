@@ -1,0 +1,150 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider        = "prisma-client-js"
+
+}
+
+
+datasource db {
+  provider = "postgresql"
+  url = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum SoundStatus {
+  DRAFT        // created but not visible yet
+  ACTIVE       // visible & usable
+  INACTIVE     // temporarily disabled
+  ARCHIVED // in history
+}
+
+model User {
+  id            String           @id @default(uuid())
+  email         String           @unique
+  password      String
+  name          String
+  role          Role
+  createdAt     DateTime         @default(now())
+
+  subscriptions Subscription[]
+  inputtedSessions InputtedSession[]
+}
+
+model Subscription {
+  id        String    @id @default(uuid())
+  plan      String
+  status    String
+  startDate DateTime
+  endDate   DateTime
+
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+
+  payments  Payment?
+}
+
+model Payment {
+  id              String   @id @default(uuid())
+  amount          Float
+  currency        String
+  paymentProvider String
+  status          String
+  createdAt       DateTime @default(now())
+
+  subscriptionId  String @unique
+  subscription    Subscription @relation(fields: [subscriptionId], references: [id])
+}
+
+model Sound {
+  id                String   @id @default(uuid())
+  title             String
+  description       String
+  totalDuration     Int
+  status            SoundStatus
+  url               String @unique
+  numberOfDownloads Int
+  createdAt DateTime @default(now()) 
+
+  sessionSounds     SessionSound[]
+  actualSessionSounds ActualSessionSound[]
+}
+
+model InputtedSession {
+  id               String   @id @default(uuid())
+  startTime        DateTime
+  endTime          DateTime
+  date             DateTime
+  prompt           String
+  chosenDuration   Int
+  tempature        Float
+  temperatureUnit  String
+
+  userId           String
+  user             User     @relation(fields: [userId], references: [id])
+
+  sessionSounds    SessionSound[]
+  actualSession    ActualSession?
+
+  sessionFeedback SessionFeedback?
+}
+
+model SessionSound {
+  id             String   @id @default(uuid())
+  volume         Float
+  duration       Int
+  startingTime   Int
+  endingTime     Int
+
+  sessionId      String
+  session        InputtedSession @relation(fields: [sessionId], references: [id])
+
+  soundId        String
+  sound          Sound @relation(fields: [soundId], references: [id])
+}
+
+model ActualSession {
+  id               String   @id @default(uuid())
+  startTime        DateTime
+  actualEndTime    DateTime
+  actualDuration   Int
+
+  inputtedSessionId String   @unique
+  inputtedSession   InputtedSession @relation(fields: [inputtedSessionId], references: [id])
+
+  playedSounds     ActualSessionSound[]
+}
+
+model ActualSessionSound {
+  id              String   @id @default(uuid())
+  playedDuration  Int
+  played          Boolean
+
+  soundId String
+  sound Sound @relation(fields: [soundId], references: [id])
+
+  actualSessionId String
+  actualSession   ActualSession @relation(fields: [actualSessionId], references: [id])
+}
+
+model SessionFeedback {
+  id          String   @id @default(uuid())
+  feeling     String
+  description String
+
+  sessionId   String   @unique
+  session     InputtedSession @relation(fields: [sessionId], references: [id])
+
+  createdAt   DateTime @default(now())
+}
+
+
+
