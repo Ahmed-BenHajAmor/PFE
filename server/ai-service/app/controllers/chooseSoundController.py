@@ -1,14 +1,32 @@
-from fastapi import APIRouter
-from app.services.matchPromptService import MatchingPromptService
+from fastapi import APIRouter, Query
+from typing import List, Optional
 from app.services.scoringService import ScoringService
-from types import List
 
 router = APIRouter(prefix="/sounds", tags=["Sounds"])
-
-matchPromptService = MatchingPromptService()
 scoringService = ScoringService()
 
 @router.get("/")
-def matchPrompt(prompt: str) -> List[str]:
-    return ["sound1", "sound2", "sound3"]
+async def match_prompt(
+    time_of_day: Optional[str] = None,
+    mood: Optional[str] = None,
+    activity: Optional[str] = None,
+    environment: Optional[str] = None,
+    temperature: Optional[int] = None,
+    season: Optional[str] = None,
+    sounds: Optional[List[str]] = Query(None),
+    prompt: Optional[str] = None
+) -> List[str]:
+    
+    features = {
+        "time_of_day": time_of_day,
+        "mood": mood,
+        "activity": activity,
+        "environment": environment,
+        "temperature": temperature,
+        "season": season,
+        "sounds": sounds,
+        "prompt": prompt
+    }
+    sounds_scores = scoringService.score(features)
+    return  [item[0] for item in sounds_scores[:2]]
 

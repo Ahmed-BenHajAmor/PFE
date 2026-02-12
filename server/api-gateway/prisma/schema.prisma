@@ -87,6 +87,14 @@ model Sound {
   numberOfDownloads Int
   createdAt DateTime @default(now()) 
 
+  timeOfDay String
+  mood String
+  activity String
+  environment String
+  temperature Int
+  temperatureUnit String
+  season String
+
   sessionSounds     SessionSound[]
   actualSessionSounds ActualSessionSound[]
 }
@@ -98,7 +106,12 @@ model InputtedSession {
   date             DateTime
   prompt           String
   chosenDuration   Int
-  tempature        Float
+  timeOfDay String
+  mood String
+  activity String
+  environment String
+  temperature Int
+  Season String
   temperatureUnit  String
 
   userId           String
