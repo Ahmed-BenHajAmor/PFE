@@ -14,7 +14,7 @@ export class SoundsController {
     constructor(private soundService : SoundsService){}
 
     @Roles(Role.ADMIN)
-    @UseGuards(JwtAuthGuard, RolesGuard)
+    @UseGuards(RolesGuard)
     @Post()
     @HttpCode(HttpStatus.CREATED)
     createSound(@Body() createSoundDto : CreateSoundDto){
@@ -22,7 +22,7 @@ export class SoundsController {
     } 
 
     @Roles(Role.ADMIN)
-    @UseGuards(JwtAuthGuard, RolesGuard)
+    @UseGuards(RolesGuard)
     @Delete(":soundId")
     @HttpCode(HttpStatus.OK)
     deleteSound(@Param("soundId") soundId : string){
@@ -31,7 +31,7 @@ export class SoundsController {
     } 
 
     @Roles(Role.ADMIN)
-    @UseGuards(JwtAuthGuard, RolesGuard)
+    @UseGuards(RolesGuard)
     @Put(":soundId")
     @HttpCode(HttpStatus.OK)
     updateSound(@Param("soundId") soundId : string, @Body() sound : UpdateSoundDto){
@@ -40,7 +40,7 @@ export class SoundsController {
     } 
 
     @Roles(Role.ADMIN)
-    @UseGuards(JwtAuthGuard, RolesGuard)
+    @UseGuards(RolesGuard)
     @Get()
     @HttpCode(HttpStatus.OK)
     getSounds(@Query() filter : GetSoundsFilterDto){

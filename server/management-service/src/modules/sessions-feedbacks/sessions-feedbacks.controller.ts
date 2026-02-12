@@ -8,14 +8,12 @@ import { SessionFeedbackFilterDto } from './dtos/session-feedback-filter.dto';
 export class SessionsFeedbacksController {
     constructor(private sessionsFeedbackService : SessionsFeedbacksService) {}
 
-    @UseGuards(JwtAuthGuard)
     @Post()
     @HttpCode(HttpStatus.CREATED)
     createSessionFeedback(@Body() createSessionFeedbackDto: CreateSessionFeedbackDto) {
         return this.sessionsFeedbackService.createSessionFeedback(createSessionFeedbackDto.sessionId, createSessionFeedbackDto);
     }
 
-    @UseGuards(JwtAuthGuard)
     @Get()
     @HttpCode(HttpStatus.CREATED)
     getSessionsFeedbacks(@Query() filter: SessionFeedbackFilterDto) {

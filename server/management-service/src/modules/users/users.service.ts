@@ -7,7 +7,7 @@ import { GetUsersFilterDto } from './dtos/user-filter.dto';
 
 @Injectable()
 export class UsersService {
-    constructor(private prismaService : PrismaService,  private jwtService: JwtService){}
+    constructor(private prismaService : PrismaService){}
 
     async register(user: Prisma.UserCreateInput ){
         const existingUser = await this.prismaService.user.findUnique({where: {email: user.email}})
@@ -18,26 +18,8 @@ export class UsersService {
         await this.prismaService.user.create({
             data: {...user, password: hashedPassword}
         })
-    } 
-
-    async validateUser(email: string, password: string) {
-        const user = await this.prismaService.user.findUnique({ where: { email } });
-        if (!user) return null;
-        const isPasswordValid = await bcrypt.compare(password, user.password);
-        if (!isPasswordValid) return null;
-        return user;
     }
-
-    async login(email: string, password: string){
-        const user = await this.validateUser(email, password);
-        if (!user) {
-            throw new UnauthorizedException('Invalid credentials');
-        }
-        const payload = { email: user.email, sub: user.id, role : user.role };
-        return {
-            access_token: this.jwtService.sign(payload),
-        };
-    }
+    
 
     async updateUser(id:string, updatedUser : Prisma.UserUpdateInput) {
         const user = await this.prismaService.user.findUnique({

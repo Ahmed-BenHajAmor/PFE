@@ -7,7 +7,6 @@ import { JwtAuthGuard } from '../users/guard/auth.guard';
 export class ActualSessionsController {
     constructor(private actualSessionService : ActualSessionsService)  {}
 
-    @UseGuards(JwtAuthGuard)
     @Post()
     @HttpCode(HttpStatus.CREATED)
     createActualSession(@Body() createActualSessionDto : CreateActualSessionDto) {

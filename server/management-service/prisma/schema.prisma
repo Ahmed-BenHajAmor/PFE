@@ -27,6 +27,13 @@ enum SoundStatus {
   ARCHIVED // in history
 }
 
+enum SubscriptionStatus {
+  ACTIVE
+  INACTIVE
+  CANCELLED
+  EXPIRED
+}
+
 model User {
   id            String           @id @default(uuid())
   email         String           @unique
@@ -39,10 +46,16 @@ model User {
   inputtedSessions InputtedSession[]
 }
 
+
+enum SubscriptionPlan {
+  FREE
+  PREMIUM_SiLVER
+  PREMIUM_GOLD
+}
 model Subscription {
   id        String    @id @default(uuid())
-  plan      String
-  status    String
+  plan      SubscriptionPlan
+  status    SubscriptionStatus
   startDate DateTime
   endDate   DateTime
 
