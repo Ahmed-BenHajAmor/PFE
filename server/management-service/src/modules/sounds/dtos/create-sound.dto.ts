@@ -1,5 +1,5 @@
-import { SoundStatus } from '@prisma/client';
-import { IsInt, IsNotEmpty, IsOptional, IsString, IsUrl, Min } from 'class-validator';
+import { Season, SoundActivity, SoundEnvironment, SoundMood, SoundStatus } from '@prisma/client';
+import { ArrayNotEmpty, ArrayUnique, IsArray, IsEnum, IsInt, IsNotEmpty, IsOptional, IsString, IsUrl, Min } from 'class-validator';
 
 export class CreateSoundDto {
   @IsString()
@@ -26,16 +26,25 @@ export class CreateSoundDto {
   timeOfDay: string;
 
   @IsOptional()
-  @IsString()
-  mood: string;
+  @IsArray()
+  @ArrayNotEmpty()
+  @ArrayUnique()
+  @IsEnum(SoundMood, { each: true })
+  mood: SoundMood[];
 
   @IsOptional()
-  @IsString()
-  activity: string;
+  @IsArray()
+  @ArrayNotEmpty()
+  @ArrayUnique()
+  @IsEnum(SoundActivity, { each: true })
+  activity: SoundActivity[];
 
   @IsOptional()
-  @IsString()
-  environment: string;
+  @IsArray()
+  @ArrayNotEmpty()
+  @ArrayUnique()
+  @IsEnum(SoundEnvironment, { each: true })
+  environment: SoundEnvironment[];
 
   @IsOptional()
   @IsInt()
@@ -46,8 +55,11 @@ export class CreateSoundDto {
   temperatureUnit: string;
 
   @IsOptional()
-  @IsString()
-  Season: string;
+  @IsArray()
+  @ArrayNotEmpty()
+  @ArrayUnique()
+  @IsEnum(Season, { each: true })
+  season: Season[];
 
   @IsOptional()
   @IsInt()

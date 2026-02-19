@@ -23,9 +23,7 @@ export class ManagementProxyController {
                 
                 data: {
                     ...req.body,
-                    user: req.user, 
                 }, 
-                params: req.query,
                 validateStatus: () => true,
             });
 

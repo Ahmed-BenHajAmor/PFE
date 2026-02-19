@@ -5,7 +5,7 @@ import {
 } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
-import { GetSoundsFilterDto } from '../users/dtos/sounds-filter.dto';
+import { GetSoundsFilterDto } from './dtos/sounds-filter.dto';
 
 @Injectable()
 export class SoundsService {
@@ -54,6 +54,7 @@ export class SoundsService {
     });
   }
 
+  
   async getSounds(filter: GetSoundsFilterDto) {
     const {
       search,
@@ -62,6 +63,10 @@ export class SoundsService {
       maxDuration,
       createdAtMin,
       createdAtMax,
+      mood,
+      activity,
+      environment,
+      season,
       page = 1,
       limit = 10,
     } = filter;
@@ -89,6 +94,11 @@ export class SoundsService {
           ...(createdAtMax && { lte: createdAtMax }),
         },
       }),
+
+      ...(mood && mood.length > 0 && { mood: { hasEvery: mood } }),
+      ...(activity && activity.length > 0 && { activity: { hasEvery: activity } }),
+      ...(environment && environment.length > 0 && { environment: { hasEvery: environment } }),
+      ...(season && season.length > 0 && { season: { hasEvery: season } }),
     };
 
     const skip = (page - 1) * limit;
@@ -113,4 +123,6 @@ export class SoundsService {
       },
     };
   }
+
+  
 }

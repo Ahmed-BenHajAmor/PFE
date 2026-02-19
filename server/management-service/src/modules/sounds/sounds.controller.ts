@@ -5,9 +5,8 @@ import { Role } from '@prisma/client';
 import { RolesGuard } from '../users/guard/role.guard';
 import { CreateSoundDto } from './dtos/create-sound.dto';
 import { SoundMapper } from './mappers/sound.mapper';
-import { JwtAuthGuard } from '../users/guard/auth.guard';
 import { UpdateSoundDto } from './dtos/update-sound.dto';
-import { GetSoundsFilterDto } from '../users/dtos/sounds-filter.dto';
+import { GetSoundsFilterDto } from './dtos/sounds-filter.dto';
 
 @Controller('sounds')
 export class SoundsController {

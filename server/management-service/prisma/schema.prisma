@@ -77,6 +77,43 @@ model Payment {
   subscription    Subscription @relation(fields: [subscriptionId], references: [id])
 }
 
+enum SoundMood{
+  CALM
+  ENERGETIC
+  SLEEPY
+  HAPPY
+  MOTIVATED
+  PEACEFUL
+  FOCUSED
+  RELAXING
+}
+
+enum SoundActivity{
+  FOCUS
+  RELAX
+  EXERCISE
+  READ
+  MEDITATE
+  WORK
+  SLEEP
+  STUDY
+}
+
+enum SoundEnvironment {
+  FOREST
+  DESERT
+  CAFE
+  MOUNTAIN
+  OCEAN
+  RAIN
+  BEACH
+}
+enum Season {
+  SPRING
+  SUMMER
+  AUTUMN 
+  WINTER
+}
 model Sound {
   id                String   @id @default(uuid())
   title             String
@@ -88,17 +125,16 @@ model Sound {
   createdAt DateTime @default(now()) 
 
   timeOfDay String
-  mood String
-  activity String
-  environment String
+  mood SoundMood[]
+  activity SoundActivity[]
+  environment SoundEnvironment[]
   temperature Int
   temperatureUnit String
-  season String
+  season Season[]
 
   sessionSounds     SessionSound[]
   actualSessionSounds ActualSessionSound[]
 }
-
 model InputtedSession {
   id               String   @id @default(uuid())
   startTime        DateTime
@@ -107,11 +143,11 @@ model InputtedSession {
   prompt           String
   chosenDuration   Int
   timeOfDay String
-  mood String
-  activity String
-  environment String?
+  mood SoundMood[]
+  activity SoundActivity[]
+  environment SoundEnvironment[]
   temperature Int
-  Season String
+  season Season[]
   temperatureUnit  String
 
   userId           String

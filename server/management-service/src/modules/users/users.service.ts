@@ -2,7 +2,6 @@ import { BadRequestException, Injectable, NotFoundException, UnauthorizedExcepti
 import { PrismaService } from 'src/prisma/prisma.service';
 import * as bcrypt from 'bcryptjs';
 import { Prisma } from '@prisma/client';
-import { JwtService } from '@nestjs/jwt';
 import { GetUsersFilterDto } from './dtos/user-filter.dto';
 
 @Injectable()

@@ -1,4 +1,4 @@
-import { SoundStatus } from '@prisma/client';
+import { Season, Sound, SoundActivity, SoundEnvironment, SoundMood, SoundStatus } from '@prisma/client';
 import {
   IsInt,
   IsOptional,
@@ -37,15 +37,15 @@ export class UpdateSoundDto {
 
   @IsOptional()
   @IsString()
-  mood?: string;
+  mood?: SoundMood[];
 
   @IsOptional()
   @IsString()
-  activity?: string;
+  activity?: SoundActivity[];
 
   @IsOptional()
   @IsString()
-  environment?: string;
+  environment?: SoundEnvironment[];
 
   @IsOptional()
   @IsInt()
@@ -57,7 +57,7 @@ export class UpdateSoundDto {
 
   @IsOptional()
   @IsString()
-  Season?: string;
+  season?: Season[];
 
   @IsOptional()
   @IsInt()

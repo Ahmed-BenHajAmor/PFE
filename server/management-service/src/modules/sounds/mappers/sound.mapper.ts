@@ -17,7 +17,7 @@ export class SoundMapper {
       environment: dto.environment,
       temperature: dto.temperature,
       temperatureUnit: dto.temperatureUnit,
-      Season: dto.Season,
+      season: dto.season,
     };
   }
 
@@ -35,7 +35,7 @@ export class SoundMapper {
       ...(dto.environment !== undefined && { environment: dto.environment }),
       ...(dto.temperature !== undefined && { temperature: dto.temperature }),
       ...(dto.temperatureUnit !== undefined && { temperatureUnit: dto.temperatureUnit }),
-      ...(dto.Season !== undefined && { Season: dto.Season }),
+      ...(dto.season !== undefined && { season: dto.season }),
     };
   }
 }
