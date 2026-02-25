@@ -7,6 +7,7 @@ import { CreateSoundDto } from './dtos/create-sound.dto';
 import { SoundMapper } from './mappers/sound.mapper';
 import { UpdateSoundDto } from './dtos/update-sound.dto';
 import { GetSoundsFilterDto } from './dtos/sounds-filter.dto';
+import { log } from 'console';
 
 @Controller('sounds')
 export class SoundsController {
@@ -16,9 +17,10 @@ export class SoundsController {
     @UseGuards(RolesGuard)
     @Post()
     @HttpCode(HttpStatus.CREATED)
-    createSound(@Body() createSoundDto : CreateSoundDto){
-        return this.soundService.createSound(SoundMapper.toCreateSound(createSoundDto));
-    } 
+    createSounds(@Body() createSoundsDto: CreateSoundDto[]) {
+        const sounds = createSoundsDto.map(SoundMapper.toCreateSound);
+        return this.soundService.createSounds(sounds);
+    }
 
     @Roles(Role.ADMIN)
     @UseGuards(RolesGuard)

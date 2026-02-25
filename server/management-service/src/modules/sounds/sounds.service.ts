@@ -11,18 +11,27 @@ import { GetSoundsFilterDto } from './dtos/sounds-filter.dto';
 export class SoundsService {
   constructor(private prismaService: PrismaService) {}
 
-  async createSound(sound: Prisma.SoundCreateInput) {
-    const soundIfExists = await this.prismaService.sound.findUnique({
-      where: { url: sound.url },
-    });
+  async createSounds(sounds: Prisma.SoundCreateInput[]) {
+    const urls = sounds.map(s => s.url);
 
-    if (soundIfExists) {
-      throw new BadRequestException('Sound already exists');
-    }
+    const existingSounds = await this.prismaService.sound.findMany({
+        where: { url: { in: urls } },
+        select: { url: true },
+      });
 
-    return this.prismaService.sound.create({
-      data: sound,
-    });
+      if (existingSounds.length > 0) {
+        const existingUrls = existingSounds.map(s => s.url);
+        throw new BadRequestException(`Sounds already exist: ${existingUrls.join(', ')}`);
+      }
+
+      await this.prismaService.sound.createMany({
+        data: sounds,
+        skipDuplicates: true,
+      });
+
+      return this.prismaService.sound.findMany({
+        where: { url: { in: urls } },
+      });
   }
 
   async deleteSound(soundId: string) {

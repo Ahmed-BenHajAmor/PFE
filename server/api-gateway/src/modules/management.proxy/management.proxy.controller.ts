@@ -13,17 +13,15 @@ export class ManagementProxyController {
 
     @All('*')
     async manageProxy(@Req() req, @Res() res) {
+        console.log(req.body)
         const targetUrl = `${this.url}${req.originalUrl.replace('/management', '')}`;
         const { host, 'content-length': _, ...headers } = req.headers;
         try {
             const response = await this.httpService.axiosRef({
                 method: req.method,
                 url: targetUrl,
-                headers,      
-                
-                data: {
-                    ...req.body,
-                }, 
+                headers,       
+                data: req.body,
                 validateStatus: () => true,
             });
 

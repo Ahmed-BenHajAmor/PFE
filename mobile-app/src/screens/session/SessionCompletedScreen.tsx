@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Animated,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Colors, FontSize, FontFamily, Spacing, BorderRadius } from '../../theme';
@@ -23,6 +24,7 @@ const SessionCompletedScreen: React.FC<Props> = ({ navigation, route }) => {
   const { duration, mood, sessionId } = route.params;
   const [rating, setRating] = useState<SessionRating | null>('Excellent');
   const [feedback, setFeedback] = useState('');
+  const [loading, setLoading] = useState(false)
   const {logout} = useAuth()
   const body = {
     sessionId,
@@ -31,7 +33,7 @@ const SessionCompletedScreen: React.FC<Props> = ({ navigation, route }) => {
   }
   const handleSave = async () => {
     const token = await AsyncStorage.getItem('access_token');
-
+    setLoading(true)
     try {
       const response = await fetch(`${API_GATEWAY_API}/management/sessions-feedbacks`, {
         method: 'POST',
@@ -49,17 +51,18 @@ const SessionCompletedScreen: React.FC<Props> = ({ navigation, route }) => {
       }
 
       if (!response.ok) {
-        console.log(data?.message);
+        
         
         Alert.alert('Session Creation Failed Invalid yRequest');
+        setLoading(false)
         return;
       }
+      setLoading(false)
       
       navigation.navigate('Home' as any);
       
     } catch (error) {
-      console.log(error);
-      
+      setLoading(false)
       Alert.alert('Network Error', 'Could not connect to the server. Please try again.');
     } 
   };
@@ -124,8 +127,12 @@ const SessionCompletedScreen: React.FC<Props> = ({ navigation, route }) => {
 
       {/* Actions */}
       <TouchableOpacity style={styles.saveBtn} onPress={handleSave} activeOpacity={0.85}>
-        <Text style={styles.heartIcon}>♥</Text>
-        <Text style={styles.saveBtnText}>Save Feedback</Text>
+        {loading ? <ActivityIndicator color={Colors.white} /> :
+        <>
+          <Text style={styles.heartIcon}>♥</Text>
+          <Text style={styles.saveBtnText}>Save Feedback</Text>
+        </>
+        }
       </TouchableOpacity>
 
       <TouchableOpacity onPress={handleSkip}>

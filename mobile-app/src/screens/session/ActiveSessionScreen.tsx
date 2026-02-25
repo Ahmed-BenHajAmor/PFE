@@ -9,6 +9,10 @@ import {
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { Colors, FontSize, FontFamily, Spacing, BorderRadius } from '../../theme';
 import type { MainStackParamList } from '../../navigation/AppNavigator';
+import Entypo from '@expo/vector-icons/Entypo';
+import Slider from '@react-native-community/slider';
+import Feather from '@expo/vector-icons/Feather';
+
 
 type Props = NativeStackScreenProps<MainStackParamList, 'ActiveSession'>;
 
@@ -82,17 +86,24 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
 
       {/* Volume */}
       <View style={styles.volumeContainer}>
-        <Text style={styles.volIcon}>🔇</Text>
-        <View style={styles.volumeTrack}>
-          <View style={[styles.volumeFill, { width: `${volume * 100}%` }]} />
-        </View>
-        <Text style={styles.volIcon}>🔊</Text>
+        <Entypo name="sound-mute" size={24} color="#7A7A7A" />
+        <Slider
+          style={{ width: '77%', height: 40 }}
+          minimumValue={0}
+          maximumValue={1}
+          value={volume}
+          onValueChange={(val) => setVolume(val)}
+          minimumTrackTintColor={Colors.accentBlue}
+          maximumTrackTintColor={Colors.border}
+          thumbTintColor={Colors.accentBlue}
+        />
+        <Entypo name="sound" size={24} color="#7A7A7A" />
       </View>
 
       {/* Controls */}
       <View style={styles.controlsBar}>
         <TouchableOpacity onPress={handleStop} style={styles.stopBtn}>
-          <Text style={styles.stopIcon}>✕</Text>
+          <Entypo name="cross" size={26} color="red" />
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -100,11 +111,11 @@ const ActiveSessionScreen: React.FC<Props> = ({ navigation, route }) => {
           onPress={() => setIsPaused((p) => !p)}
           activeOpacity={0.8}
         >
-          <Text style={styles.pauseIcon}>{isPaused ? '▶' : '⏸'}</Text>
+          <Text style={styles.pauseIcon}>{isPaused ?  <Feather name="play" size={24} color="white" /> : <Feather name="pause" size={24} color="white" />}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.settingsBtn}>
-          <Text style={styles.settingsIcon}>≡</Text>
+          <Entypo name="menu" size={24} color="#7A7A7A" />
         </TouchableOpacity>
       </View>
     </View>

@@ -31,7 +31,7 @@ async def getMatchedSounds(
         "season": season,
         "prompt": prompt
     }
-
+    print(features)
     sounds = soundService.get_all_sounds()
 
     prompt_matched_sounds = matchPromptService.matchPrompt(prompt, sounds)

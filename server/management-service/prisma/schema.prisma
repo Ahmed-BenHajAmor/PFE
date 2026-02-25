@@ -120,7 +120,7 @@ model Sound {
   description       String
   totalDuration     Int
   status            SoundStatus
-  url               String @unique
+  url               String
   numberOfDownloads Int
   createdAt DateTime @default(now()) 
 

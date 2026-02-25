@@ -16,6 +16,7 @@ import type { MainStackParamList, SessionStackParamList } from '../../navigation
 import { API_GATEWAY_API } from '@env';
 import { useAuth } from '@/contexts/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ActivityIndicator } from 'react-native';
 
 type Props = NativeStackScreenProps<MainStackParamList, 'CustomVibe'>;
 
@@ -25,6 +26,7 @@ const CustomVibeScreen: React.FC<Props> = ({ navigation, route }) => {
   const now = new Date();
   const end = new Date(now.getTime() + duration * 60 * 1000);
   const { logout } = useAuth();
+  const [loading, setLoading] = useState(false);
 
 
   const getTimeOfDay = (hour: number) => {
@@ -57,7 +59,8 @@ const CustomVibeScreen: React.FC<Props> = ({ navigation, route }) => {
   };
   const handleStart = async () => {
     const token = await AsyncStorage.getItem('access_token');
-
+    
+    setLoading(true)
     try {
       const response = await fetch(`${API_GATEWAY_API}/management/inputted-sessions`, {
         method: 'POST',
@@ -69,19 +72,19 @@ const CustomVibeScreen: React.FC<Props> = ({ navigation, route }) => {
       });
 
       const data = await response.json();
-
+      
       if(response.status === 401){
         await logout();
       }
 
       if (!response.ok) {
-        console.log(data?.message);
         
-        Alert.alert('Session Creation Failed Invalid yRequest');
+        Alert.alert('Session Creation Failed Invalid Request');
+        setLoading(false)
         return;
       }
       console.log(data);
-      
+      setLoading(false)
       navigation.navigate('ActiveSession', {
         duration,
         moods,
@@ -91,8 +94,7 @@ const CustomVibeScreen: React.FC<Props> = ({ navigation, route }) => {
       });
       
     } catch (error) {
-      console.log(error);
-      
+      setLoading(false)      
       Alert.alert('Network Error', 'Could not connect to the server. Please try again.');
     } 
  
@@ -121,12 +123,18 @@ const CustomVibeScreen: React.FC<Props> = ({ navigation, route }) => {
             textAlignVertical="top"
           />
         </View>
-
+        
+        
         <TouchableOpacity style={styles.startBtn} onPress={handleStart} activeOpacity={0.85}>
+          {loading ? 
+          <ActivityIndicator color={Colors.white} /> 
+          :
+          <>
           <Text style={styles.heartIcon}>♥</Text>
           <Text style={styles.startText}>Start Listening</Text>
+          </>
+          }
         </TouchableOpacity>
-
         <View style={styles.navRow}>
           <NavArrow direction="left" onPress={() => navigation.goBack()} />
         </View>
