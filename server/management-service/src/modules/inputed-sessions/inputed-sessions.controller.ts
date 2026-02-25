@@ -48,13 +48,17 @@ export class InputedSessionsController {
         prompt: createInputtedSessionDto.prompt,
       })
     const soundIds: string[] = response.data;
-    return this.inputedSessionService.createInputtedSession(
+    const createdSession = await this.inputedSessionService.createInputtedSession(
       InputtedSessionMapper.toPrismaCreate(
         createInputtedSessionDto,
         soundIds,
         userId
       )
     );
+    return {
+      ...createdSession,
+      soundIds,
+    }
   }
 
   @Roles(Role.ADMIN)

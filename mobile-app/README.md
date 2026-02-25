@@ -1,50 +1,78 @@
-# Welcome to your Expo app 👋
+# ZenAI — Premium AI Soundscapes
+React Native (Expo + TypeScript) implementation of the ZenAI mobile app design.
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
-
-## Get started
-
-1. Install dependencies
-
-   ```bash
-   npm install
-   ```
-
-2. Start the app
-
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
+## Folder Structure
+```
+zenai/
+├── App.tsx                          # Root entry point
+├── app.json                         # Expo config
+├── package.json
+├── tsconfig.json
+├── babel.config.js
+└── src/
+    ├── theme/
+    │   ├── colors.ts                # All color tokens
+    │   ├── typography.ts            # Font sizes, families, letter spacing
+    │   ├── spacing.ts               # Spacing scale, border radius, icon sizes
+    │   └── index.ts                 # Barrel export
+    ├── constants/
+    │   └── index.ts                 # App-wide constants (moods, environments, durations)
+    ├── components/
+    │   ├── ui/
+    │   │   ├── Logo.tsx             # ZenAI brand logo + tagline
+    │   │   ├── Button.tsx           # Reusable button (primary / secondary / ghost)
+    │   │   ├── Input.tsx            # Text input with icon + password toggle
+    │   │   ├── SocialButton.tsx     # Google / Apple auth buttons
+    │   │   ├── TagChip.tsx          # Selectable mood/environment chips
+    │   │   └── NavArrow.tsx         # Left/right circle nav arrows
+    │   └── session/
+    │       ├── CircularSlider.tsx   # Arc-based duration slider
+    │       └── VolumeSlider.tsx     # Horizontal volume control
+    ├── navigation/
+    │   └── AppNavigator.tsx         # Root + Auth + Main stack navigators + type defs
+    └── screens/
+        ├── auth/
+        │   ├── LoginScreen.tsx
+        │   └── RegisterScreen.tsx
+        ├── main/
+        │   ├── HomeScreen.tsx
+        │   └── PremiumScreen.tsx
+        └── session/
+            ├── SessionLengthScreen.tsx
+            ├── MoodScreen.tsx
+            ├── EnvironmentScreen.tsx
+            ├── CustomVibeScreen.tsx
+            ├── ActiveSessionScreen.tsx
+            └── SessionCompletedScreen.tsx
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Screens
+| Screen | Route | Description |
+|--------|-------|-------------|
+| Login | `Auth/Login` | Email + password + social login |
+| Register | `Auth/Register` | Full name, email, password fields |
+| Home | `Main/Home` | ZenAI logo + Start Session CTA |
+| Premium | `Main/Premium` | Basic / Silver / Gold pricing tiers |
+| Session Length | `Main/SessionLength` | Circular arc slider, preset buttons |
+| Mood | `Main/Mood` | Multi-select mood chip grid |
+| Environment | `Main/Environment` | Single-select environment chip grid |
+| Custom Vibe | `Main/CustomVibe` | Free-text prompt + Start Listening |
+| Active Session | `Main/ActiveSession` | Live countdown timer, volume, pause/stop |
+| Session Completed | `Main/SessionCompleted` | Rating + feedback + save |
 
-## Learn more
+## Setup
+```bash
+npm install
+npx expo start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+## Design Decisions
+- **Navigation**: Single flat `MainStack` containing all post-auth screens for simple `navigate()` calls. In production, split into nested stacks with a tab bar.
+- **Auth State**: `isAuthenticated = false` toggle in `AppNavigator.tsx`. Wire to a context or Redux store for real sessions.
+- **CircularSlider**: Pure React Native implementation (no SVG dependency). Uses 60 dot segments drawn in a circle + PanResponder for drag.
+- **VolumeSlider**: Uses `@react-native-community/slider` — install separately if not bundled: `npx expo install @react-native-community/slider`
+- **Gold tier price**: Design PDF showed both Silver and Gold at $9.99. Gold was updated to $19.99 as the design appeared to be a placeholder with identical pricing.
+- **Font**: Uses platform system fonts. Swap `FontFamily` values in `src/theme/typography.ts` for custom fonts (e.g., `expo-font` + Google Fonts).
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Theme Customization
+All design tokens live in `src/theme/`. Change colors, spacing, or font sizes there — every screen and component references these constants.

@@ -1,2 +1,0 @@
-This folder stores static assets such as images and icons for the project.
-For this scaffold, actual binary assets are not included to keep the patch light.

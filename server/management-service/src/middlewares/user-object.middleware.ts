@@ -13,7 +13,7 @@ export class ExtractUserMiddleware implements NestMiddleware {
       const token = authHeader.split(' ')[1];
       try {
         const payload = this.jwtService.decode(token);
-        req.user = payload;
+        req.user = {...payload, userId: payload.sub};
       } catch (err) {
         error(err);
       }

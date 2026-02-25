@@ -16,9 +16,9 @@ export class UsersController {
 
     @Post("register")
     @HttpCode(HttpStatus.CREATED)
-    register( @Body() user : CreateUserDto){
+    async register( @Body() user : CreateUserDto){
         log('Registering user:', user);
-        this.usersService.register(UserMapper.toUserCreateInput(user));
+        await this.usersService.register(UserMapper.toUserCreateInput(user));
         return {
             message: 'User registered successfully',
         };
